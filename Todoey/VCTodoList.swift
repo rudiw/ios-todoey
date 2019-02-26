@@ -10,11 +10,15 @@ import UIKit
 
 class VCTodoList: UITableViewController {
     
-    var itemArray: [String] = ["Go to kitchen", "Make a coffe", "Come back"]
+    var itemArray: [String] = [String]();
+    
+    let defaults = UserDefaults.standard;
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        itemArray = defaults.stringArray(forKey: "itemArray") ?? [String]()
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -46,6 +50,9 @@ class VCTodoList: UITableViewController {
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
 //            print(txtField.text);
             self.itemArray.append(txtField.text!);
+            
+            self.defaults.setValue(self.itemArray, forKey: "itemArray");
+            
             self.tableView.reloadData();
             
         };
