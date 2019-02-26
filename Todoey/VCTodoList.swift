@@ -10,7 +10,7 @@ import UIKit
 
 class VCTodoList: UITableViewController {
     
-    var itemArray: [String] = [String]();
+    var itemArray: [Item] = [Item]();
     
     let defaults = UserDefaults.standard;
 
@@ -18,7 +18,22 @@ class VCTodoList: UITableViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        itemArray = defaults.stringArray(forKey: "itemArray") ?? [String]()
+//        if let upItemArray = defaults.array(forKey: "itemArray") as? [Item] {
+//            self.itemArray = upItemArray;
+//        }
+//        let item1 = Item();
+//        item1.title = "go to kitchen";
+//        itemArray.append(item1);
+//
+//        let item2 = Item();
+//        item2.title = "go to kitchen";
+//        item2.done = true;
+//        itemArray.append(item2);
+//
+//        let item3 = Item();
+//        item3.title = "go to kitchen";
+//        itemArray.append(item3);
+        
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -26,17 +41,20 @@ class VCTodoList: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cell = UITableViewCell(style: .default, reuseIdentifier: "todoItemCell");
         let cell = tableView.dequeueReusableCell(withIdentifier: "todoItemCell", for: indexPath);
-        cell.textLabel?.text = itemArray[indexPath.row];
+        cell.textLabel?.text = itemArray[indexPath.row].title;
+        cell.accessoryType = itemArray[indexPath.row].done ? .checkmark : .none;
         
         return cell;
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("Selected cell \(itemArray[indexPath.row])");
+//        print("Selected cell \(itemArray[indexPath.row])");
         
-        let cell = tableView.cellForRow(at: indexPath);
-        cell?.accessoryType = cell?.accessoryType == UITableViewCell.AccessoryType.checkmark ? UITableViewCell.AccessoryType.none : UITableViewCell.AccessoryType.checkmark
+        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        
+        tableView.reloadData();
         
         tableView.deselectRow(at: indexPath, animated: true);
     }
@@ -49,7 +67,9 @@ class VCTodoList: UITableViewController {
         
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
 //            print(txtField.text);
-            self.itemArray.append(txtField.text!);
+            let item = Item();
+            item.title = txtField.text!;
+            self.itemArray.append(item);
             
             self.defaults.setValue(self.itemArray, forKey: "itemArray");
             
