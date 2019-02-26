@@ -10,7 +10,7 @@ import UIKit
 
 class VCTodoList: UITableViewController {
     
-    let itemArray: [String] = ["Go to kitchen", "Make a coffe", "Come back"]
+    var itemArray: [String] = ["Go to kitchen", "Make a coffe", "Come back"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +27,38 @@ class VCTodoList: UITableViewController {
         
         return cell;
     }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("Selected cell \(itemArray[indexPath.row])");
+        
+        let cell = tableView.cellForRow(at: indexPath);
+        cell?.accessoryType = cell?.accessoryType == UITableViewCell.AccessoryType.checkmark ? UITableViewCell.AccessoryType.none : UITableViewCell.AccessoryType.checkmark
+        
+        tableView.deselectRow(at: indexPath, animated: true);
+    }
 
+    
+    @IBAction func btnAddPressed(_ sender: UIBarButtonItem) {
+        let alert = UIAlertController(title: "Add New Todoey Item", message: "", preferredStyle: .alert);
 
+        var txtField = UITextField();
+        
+        let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
+//            print(txtField.text);
+            self.itemArray.append(txtField.text!);
+            self.tableView.reloadData();
+            
+        };
+        alert.addAction(action);
+        alert.addTextField { (alertTxtField) in
+            txtField = alertTxtField;
+            alertTxtField.placeholder = "Create new item";
+        }
+        
+        present(alert, animated: true, completion: nil);
+        
+    }
+    
+    
 }
 
