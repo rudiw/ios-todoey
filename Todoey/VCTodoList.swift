@@ -52,13 +52,14 @@ class VCTodoList: UITableViewController {
         
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
+//        context.delete(itemArray[indexPath.row]);
+//        self.itemArray.remove(at: indexPath.row);
+        
         self.saveItems();
 
 //use user defaults
 //        self.itemArray.append(txtField.text!);
 //        self.defaults.setValue(self.itemArray, forKey: "itemArray");
-        
-        tableView.reloadData();
         
         tableView.deselectRow(at: indexPath, animated: true);
     }
@@ -79,7 +80,6 @@ class VCTodoList: UITableViewController {
             
             self.saveItems();
             
-            self.tableView.reloadData();
             
         };
         alert.addAction(action);
@@ -107,6 +107,8 @@ class VCTodoList: UITableViewController {
         } catch {
             print("Failed to save items: \(error)");
         }
+        
+        tableView.reloadData();
     }
     
     func loadItems() {
