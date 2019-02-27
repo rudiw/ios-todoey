@@ -11,6 +11,8 @@ import CoreData
 
 class VCTodoList: UITableViewController {
     
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     var itemArray: [Item] = [Item]();
     
 //    use user defaults
@@ -24,6 +26,8 @@ class VCTodoList: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        searchBar.delegate = self;
         
 //        print("Data file path: \(dataFilePath)");
         print("document dir: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first)")
@@ -102,7 +106,6 @@ class VCTodoList: UITableViewController {
 //        }
         
         do {
-//            context.
             try context.save()
         } catch {
             print("Failed to save items: \(error)");
@@ -111,7 +114,7 @@ class VCTodoList: UITableViewController {
         tableView.reloadData();
     }
     
-    func loadItems() {
+    func loadItems(with reqItems: NSFetchRequest<Item> = Item.fetchRequest()) {
 //        do {
 //            if let data = try? Data(contentsOf: dataFilePath!) {
 //                let decoder = PropertyListDecoder();
@@ -121,15 +124,43 @@ class VCTodoList: UITableViewController {
 //            print("Failed to load items: \(error)");
 //        }
         
-        let reqItems: NSFetchRequest<Item> = Item.fetchRequest();
-        
         do {
             self.itemArray = try context.fetch(reqItems);
+            
+            self.tableView.reloadData();
         } catch {
             print("Failed to fetch items: \(error)");
         }
     }
     
+}
+
+extension VCTodoList: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let reqItems: NSFetchRequest<Item> = Item.fetchRequest();
+//        print("reqItems: \(reqItems)");
+//        print("searchBar.text: \(searchBar.text)");
+        
+        if (searchBar.text != nil && searchBar.text != "") {
+            let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!);
+            reqItems.predicate = predicate;
+        }
+        
+        let sort = NSSortDescriptor(key: "title", ascending: true);
+        reqItems.sortDescriptors = [sort];
+        
+        loadItems(with: reqItems);
+        
+    }
     
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if (searchBar.text?.count == 0) {
+            loadItems()
+            
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder();
+            }
+        }
+    }
 }
 
