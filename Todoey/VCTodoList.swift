@@ -13,6 +13,11 @@ class VCTodoList: UITableViewController {
     
     @IBOutlet weak var searchBar: UISearchBar!
     
+    var selectedCategory: Category? {
+        didSet {
+            loadItems();
+        }
+    }
     var itemArray: [Item] = [Item]();
     
 //    use user defaults
@@ -80,6 +85,7 @@ class VCTodoList: UITableViewController {
             let item = Item(context: self.context);
             item.title = txtField.text!;
             item.done = false;
+            item.category = self.selectedCategory;
             self.itemArray.append(item);
             
             self.saveItems();
@@ -125,6 +131,17 @@ class VCTodoList: UITableViewController {
 //        }
         
         do {
+            let predicateByCategory = NSPredicate(format: "category.name MATCHES %@", selectedCategory!.name!);
+            
+            if let predicate = reqItems.predicate {
+                
+                let compound = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, predicateByCategory])
+                reqItems.predicate = compound;
+            } else {
+                reqItems.predicate = predicateByCategory;
+            }
+            
+            
             self.itemArray = try context.fetch(reqItems);
             
             self.tableView.reloadData();
