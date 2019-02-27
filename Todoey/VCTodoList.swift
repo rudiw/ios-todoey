@@ -119,11 +119,13 @@ class VCTodoList: UITableViewController {
 //            print("Failed to load items: \(error)");
 //        }
         
-//        do {
-//            try context.lo
-//        } catch <#pattern#> {
-//            <#statements#>
-//        }
+        let reqItems: NSFetchRequest<Item> = Item.fetchRequest();
+        
+        do {
+            self.itemArray = try context.fetch(reqItems);
+        } catch {
+            print("Failed to fetch items: \(error)");
+        }
     }
     
     
