@@ -7,20 +7,31 @@
 //
 
 import UIKit
+import CoreData
 
 class VCTodoList: UITableViewController {
     
     var itemArray: [Item] = [Item]();
     
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist");
+//    use user defaults
+    //var itemArray: [String] = ["Go to kitchen", "Make a coffe", "Come back"]
+//    let defaults = UserDefaults.standard;
+    
+//    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist");
+    
+    let context = ( (UIApplication.shared.delegate) as! AppDelegate ).persistentContainer.viewContext;
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        print("Data file path: \(dataFilePath)");
+//        print("Data file path: \(dataFilePath)");
+        print("document dir: \(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first)")
      
         loadItems();
+        
+//        use user defaults
+//        itemArray = defaults.stringArray(forKey: "itemArray") ?? [String]()
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -42,6 +53,10 @@ class VCTodoList: UITableViewController {
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
         self.saveItems();
+
+//use user defaults
+//        self.itemArray.append(txtField.text!);
+//        self.defaults.setValue(self.itemArray, forKey: "itemArray");
         
         tableView.reloadData();
         
@@ -56,8 +71,10 @@ class VCTodoList: UITableViewController {
         
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
 //            print(txtField.text);
-            let item = Item();
+            
+            let item = Item(context: self.context);
             item.title = txtField.text!;
+            item.done = false;
             self.itemArray.append(item);
             
             self.saveItems();
@@ -76,24 +93,37 @@ class VCTodoList: UITableViewController {
     }
     
     func saveItems() {
-        let encoder = PropertyListEncoder();
+//        let encoder = PropertyListEncoder();
+//        do {
+//            let data = try encoder.encode(self.itemArray);
+//            try data.write(to: self.dataFilePath!)
+//        } catch {
+//            print("Failed to encod data to document: \(error)");
+//        }
+        
         do {
-            let data = try encoder.encode(self.itemArray);
-            try data.write(to: self.dataFilePath!)
+//            context.
+            try context.save()
         } catch {
-            print("Failed to encod data to document: \(error)");
+            print("Failed to save items: \(error)");
         }
     }
     
     func loadItems() {
-        do {
-            if let data = try? Data(contentsOf: dataFilePath!) {
-                let decoder = PropertyListDecoder();
-                self.itemArray = try decoder.decode([Item].self, from: data);
-            }
-        } catch {
-            print("Failed to load items: \(error)");
-        }
+//        do {
+//            if let data = try? Data(contentsOf: dataFilePath!) {
+//                let decoder = PropertyListDecoder();
+//                self.itemArray = try decoder.decode([Item].self, from: data);
+//            }
+//        } catch {
+//            print("Failed to load items: \(error)");
+//        }
+        
+//        do {
+//            try context.lo
+//        } catch <#pattern#> {
+//            <#statements#>
+//        }
     }
     
     
