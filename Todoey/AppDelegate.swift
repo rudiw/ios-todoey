@@ -20,6 +20,30 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
+//        Realm.Configuration.defaultConfiguration = Realm.Configuration(
+//            schemaVersion: 1,
+//            migrationBlock: { migration, oldSchemaVersion in
+//                print("migrate from \(oldSchemaVersion) ");
+//                if (oldSchemaVersion < 1) {
+//                    // The enumerateObjects(ofType:_:) method iterates
+//                    // over every Person object stored in the Realm file
+//                    migration.enumerateObjects(ofType: Item.className()) { oldObject, newObject in
+//                        // combine name fields into a single field
+////                        let firstName = oldObject!["firstName"] as! String
+////                        let lastName = oldObject!["lastName"] as! String
+////                        newObject!["fullName"] = "\(firstName) \(lastName)"
+//                        newObject!["dateCreated"] = Date();
+//                    }
+//                }
+//        });
+//        
+//        do {
+//            try _ = Realm();
+//        } catch {
+//            print("Error init realm: \(error)");
+//        }
+        
+        
         print("Realm fileUrl: \(Realm.Configuration.defaultConfiguration.fileURL)");
 //
 //        let data = Data();

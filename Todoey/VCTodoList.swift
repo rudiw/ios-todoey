@@ -79,8 +79,8 @@ class VCTodoList: UITableViewController {
       
             do {
                 try realm.write {
-//                    item.done = !item.done;
-                    try realm.delete(item);
+                    item.done = !item.done;
+//                    try realm.delete(item);
                 }
             } catch {
                 print("Failed to update item: \(error)");
@@ -89,12 +89,14 @@ class VCTodoList: UITableViewController {
         
 //        tableView.reloadData();
         tableView.beginUpdates();
-//        tableView.reloadRows(at: [indexPath], with: .automatic);
-        if (itemArray?.count ?? 0 > 0) {
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-        } else {
-            tableView.reloadRows(at: [indexPath], with: .automatic)
-        }
+        
+        tableView.reloadRows(at: [indexPath], with: .automatic);
+        
+//        if (itemArray?.count ?? 0 > 0) {
+//            tableView.deleteRows(at: [indexPath], with: .automatic)
+//        } else {
+//            tableView.reloadRows(at: [indexPath], with: .automatic)
+//        }
         
         tableView.endUpdates();
         
@@ -125,6 +127,7 @@ class VCTodoList: UITableViewController {
                     try self.realm.write {
                         let item = Item();
                         item.title = txtField.text!;
+                        item.dateCreated = Date();
                         curCategor.items.append(item);
                     }
                 } catch {
@@ -222,11 +225,15 @@ extension VCTodoList: UISearchBarDelegate {
 //
 //        loadItems(with: reqItems);
         
+        itemArray = itemArray?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true);
+        
+        tableView.reloadData()
+        
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if (searchBar.text?.count == 0) {
-//            loadItems()
+            loadItems()
             
             DispatchQueue.main.async {
                 searchBar.resignFirstResponder();
