@@ -7,14 +7,17 @@
 //
 
 import UIKit
-import CoreData
+//import CoreData
+import RealmSwift
 
 
 class VCCategory: UITableViewController {
     
-    var categoryArray: [Category] = [Category]();
+//    var categoryArray: [Category] = [Category]();
+    var categoryArray: Results<Category>?;
     
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext;
+//    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext;
+    let realm = try! Realm();
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,35 +27,59 @@ class VCCategory: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return self.categoryArray.count;
+        if (self.categoryArray != nil) {
+            if (self.categoryArray!.count > 0) {
+                return self.categoryArray!.count;
+            }
+        }
+        return 1;
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "goToItems", sender: self);
+        if (categoryArray != nil) {
+            if (categoryArray!.count > 0) {
+                performSegue(withIdentifier: "goToItems", sender: self);
+            }
+        }
+        
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let vcItems = segue.destination as! VCTodoList;
         if let indexPath = self.tableView.indexPathForSelectedRow {
-            vcItems.selectedCategory = self.categoryArray[indexPath.row];
+            vcItems.selectedCategory = self.categoryArray?[indexPath.row];
         }
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath);
         
-        let category = categoryArray[indexPath.row];
+        var category: Category?
+        if (categoryArray != nil) {
+            if (categoryArray!.count > 0) {
+                category = categoryArray?[indexPath.row];
+            }
+        }
         
-        cell.textLabel?.text = category.name;
+        cell.textLabel?.text = category?.name ?? "No categories added yet.";
         
         return cell;
     }
     
-    func loadCategories(with reqCategories: NSFetchRequest<Category> = Category.fetchRequest()) {
+//    func loadCategories(with reqCategories: NSFetchRequest<Category> = Category.fetchRequest()) {
+//        do {
+//            self.categoryArray = try context.fetch(reqCategories);
+//        } catch {
+//            print("Faile to load categories: \(error)");
+//        }
+//        self.tableView.reloadData();
+//    }
+    
+    func loadCategories() {
         do {
-            self.categoryArray = try context.fetch(reqCategories);
+            self.categoryArray = try realm.objects(Category.self);
         } catch {
-            print("Faile to load categories: \(error)");
+            print("Failed to load categories: \(error)");
         }
         self.tableView.reloadData();
     }
@@ -61,12 +88,14 @@ class VCCategory: UITableViewController {
         let alert = UIAlertController(title: "Add new category", message: "", preferredStyle: .alert);
         var txtCategory: UITextField = UITextField();
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
-            let category = Category(context: self.context);
-            category.name = txtCategory.text;
+//            let category = Category(context: self.context);
             
-            self.categoryArray.append(category);
-            
-            self.saveCategories();
+            let newCategory = Category();
+            newCategory.name = txtCategory.text!;
+
+//            self.categoryArray.append(newCategory);
+
+            self.saveCategories(category: newCategory);
         }
         alert.addAction(action);
         alert.addTextField { (txt) in
@@ -79,9 +108,12 @@ class VCCategory: UITableViewController {
         
     }
     
-    func saveCategories() {
+    func saveCategories(category: Category) {
         do {
-            try context.save();
+//            try context.save();
+            try realm.write {
+                realm.add(category);
+            }
         } catch {
             print("Failed to save categories: \(error)");
         }

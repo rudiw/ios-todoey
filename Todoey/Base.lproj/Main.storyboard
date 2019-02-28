@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Item-->
+        <!--Items-->
         <scene sceneID="yZm-kj-7DX">
             <objects>
                 <tableViewController id="g5a-US-hSu" customClass="VCTodoList" customModule="Todoey" customModuleProvider="target" sceneMemberID="viewController">
@@ -37,7 +37,7 @@
                             <outlet property="delegate" destination="g5a-US-hSu" id="Vh5-Yl-5ut"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Item" id="0aB-8g-qTC">
+                    <navigationItem key="navigationItem" title="Items" id="0aB-8g-qTC">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="Ioc-nE-QWt">
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <connections>
