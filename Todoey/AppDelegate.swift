@@ -36,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //                    }
 //                }
 //        });
-//        
+//
 //        do {
 //            try _ = Realm();
 //        } catch {
@@ -60,12 +60,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            print("Failed to create Realm: \(error)");
 //        }
         
-//        do {
-//            let realm = try Realm();
-//            
-//        } catch {
-//            print("Failed to create Realm: \(error)");
-//        }
+        do {
+            _ = try Realm();
+        } catch {
+            print("Failed to create Realm: \(error)");
+        }
         
         return true
     }
