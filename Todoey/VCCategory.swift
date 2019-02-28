@@ -9,6 +9,7 @@
 import UIKit
 //import CoreData
 import RealmSwift
+import SwipeCellKit
 
 
 class VCCategory: UITableViewController {
@@ -23,6 +24,10 @@ class VCCategory: UITableViewController {
         super.viewDidLoad()
         
         loadCategories();
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 80.0
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -52,19 +57,21 @@ class VCCategory: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath);
-        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath) as! SwipeTableViewCell;
+        cell.delegate = self;
+
         var category: Category?
         if (categoryArray != nil) {
             if (categoryArray!.count > 0) {
                 category = categoryArray?[indexPath.row];
             }
         }
-        
+
         cell.textLabel?.text = category?.name ?? "No categories added yet.";
-        
+
         return cell;
     }
+    
     
 //    func loadCategories(with reqCategories: NSFetchRequest<Category> = Category.fetchRequest()) {
 //        do {
@@ -121,4 +128,30 @@ class VCCategory: UITableViewController {
         self.tableView.reloadData();
     }
     
+}
+
+extension VCCategory: SwipeTableViewCellDelegate {
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
+        guard orientation == .right else { return nil }
+        
+        let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
+            // handle action by updating model with deletion
+//            print("on delete");
+            if let deletingCategory = self.categoryArray?[indexPath.row] {
+                do {
+                    try self.realm.write {
+                        try self.realm.delete(deletingCategory);
+                    }
+                } catch {
+                    print("Failed to remove category: \(error)");
+                }
+            }
+            
+        }
+        
+        // customize the action appearance
+        deleteAction.image = UIImage(named: "delete")
+        
+        return [deleteAction]
+    }
 }
