@@ -62,6 +62,7 @@ class VCCategory: SwipeTableViewController {
                 category = categoryArray?[indexPath.row];
                 
                 cell.backgroundColor = UIColor(hexString: category?.colorHex ?? UIColor.randomFlat.hexValue());
+                cell.textLabel?.textColor = ContrastColorOf(cell.backgroundColor!, returnFlat: true);
                 
                 cell.delegate = self;
             } else {

@@ -52,21 +52,30 @@ class VCTodoList: SwipeTableViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        if let colorHex = selectedCategory?.colorHex {
-            guard let navbar = navigationController?.navigationBar else {
-                fatalError("Navigation controller does not exist");
-            }
-            title = selectedCategory!.name;
-            
-            if let navbarColor = UIColor(hexString: colorHex) {
-                navbar.barTintColor = navbarColor;
-                navbar.tintColor = ContrastColorOf(navbarColor, returnFlat: true);
-                navbar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : ContrastColorOf(navbarColor, returnFlat: true) ]
-                
-                searchBar.barTintColor = navbarColor;
-            }
-            
+        guard let colorHex = selectedCategory?.colorHex else { fatalError("Selected category must not be null!") }
+        
+        title = selectedCategory!.name;
+        
+        updateNavBar(withHexCode: colorHex);
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        updateNavBar(withHexCode: "942193");
+    }
+    
+    func updateNavBar(withHexCode colorHexCode: String) {
+        guard let navbar = navigationController?.navigationBar else {
+            fatalError("Navigation controller does not exist");
         }
+        
+        guard let navbarColor = UIColor(hexString: colorHexCode) else {fatalError("Navbar color from category must not be null!")}
+        
+        navbar.barTintColor = navbarColor;
+        navbar.tintColor = ContrastColorOf(navbarColor, returnFlat: true);
+        navbar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : ContrastColorOf(navbarColor, returnFlat: true) ]
+        
+        searchBar.barTintColor = navbarColor;
+        
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
