@@ -9,8 +9,10 @@
 import UIKit
 //import CoreData
 import RealmSwift
+import SwipeCellKit
 
-class VCTodoList: UITableViewController {
+
+class VCTodoList: SwipeTableViewController {
     
     @IBOutlet weak var searchBar: UISearchBar!
     
@@ -56,15 +58,20 @@ class VCTodoList: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 //        let cell = UITableViewCell(style: .default, reuseIdentifier: "todoItemCell");
-        let cell = tableView.dequeueReusableCell(withIdentifier: "todoItemCell", for: indexPath);
+        let cell = super.tableView(tableView, cellForRowAt: indexPath) as! SwipeTableViewCell;
+        
         if (itemArray?.count ?? 0 > 0 ) {
             let item = itemArray![indexPath.row]
             
             cell.textLabel?.text = item.title;
             cell.accessoryType = item.done ? .checkmark : .none;
+            
+            cell.delegate = self;
         } else {
             cell.textLabel?.text = "No items added yet.";
             cell.accessoryType = .none;
+            
+            cell.delegate = nil;
         }
         
         return cell;
@@ -110,6 +117,27 @@ class VCTodoList: UITableViewController {
 //        self.defaults.setValue(self.itemArray, forKey: "itemArray");
         
         tableView.deselectRow(at: indexPath, animated: true);
+    }
+    
+    override func removeRow(at indexPath: IndexPath) {
+        if (itemArray?.count ?? 0 > 0 ) {
+            let item = itemArray![indexPath.row]
+            
+            do {
+                try realm.write {
+                    realm.delete(item);
+                    
+                    if (self.itemArray?.count ?? 0 > 0) {
+                        tableView.deleteRows(at: [indexPath], with: .automatic);
+                    } else {
+                        print("no more categories");
+                        tableView.reloadRows(at: [indexPath], with: .automatic);
+                    }
+                }
+            } catch {
+                print("Failed to update item: \(error)");
+            }
+        }
     }
 
     
