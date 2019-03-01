@@ -25,8 +25,6 @@ class VCCategory: SwipeTableViewController {
         super.viewDidLoad()
         
         loadCategories();
-        
-        self.tableView.separatorStyle = .none;
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

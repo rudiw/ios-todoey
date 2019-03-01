@@ -10,6 +10,7 @@ import UIKit
 //import CoreData
 import RealmSwift
 import SwipeCellKit
+import ChameleonFramework
 
 
 class VCTodoList: SwipeTableViewController {
@@ -47,6 +48,25 @@ class VCTodoList: SwipeTableViewController {
         
 //        use user defaults
 //        itemArray = defaults.stringArray(forKey: "itemArray") ?? [String]()
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        if let colorHex = selectedCategory?.colorHex {
+            guard let navbar = navigationController?.navigationBar else {
+                fatalError("Navigation controller does not exist");
+            }
+            title = selectedCategory!.name;
+            
+            if let navbarColor = UIColor(hexString: colorHex) {
+                navbar.barTintColor = navbarColor;
+                navbar.tintColor = ContrastColorOf(navbarColor, returnFlat: true);
+                navbar.titleTextAttributes = [NSAttributedString.Key.foregroundColor : ContrastColorOf(navbarColor, returnFlat: true) ]
+                
+                searchBar.barTintColor = navbarColor;
+            }
+            
+        }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -67,6 +87,12 @@ class VCTodoList: SwipeTableViewController {
             cell.accessoryType = item.done ? .checkmark : .none;
             
             cell.delegate = self;
+            
+            if let bgColor = UIColor(hexString: selectedCategory!.colorHex)?.darken(byPercentage:
+                CGFloat(indexPath.row) / CGFloat(self.itemArray!.count) ) {
+                cell.backgroundColor = bgColor;
+                cell.textLabel?.textColor = ContrastColorOf(bgColor, returnFlat: true);
+            }
         } else {
             cell.textLabel?.text = "No items added yet.";
             cell.accessoryType = .none;
