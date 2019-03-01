@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0D4CB8D46E158C0AF90064B4 /* Pods_Todoey.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43FA380904A5F04E0593EBA3 /* Pods_Todoey.framework */; };
+		B06FFD6E2228CB8500BE4BC5 /* SwipeTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B06FFD6D2228CB8400BE4BC5 /* SwipeTableViewController.swift */; };
 		B0A9E9DE2224CC9300CAFC89 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A9E9DD2224CC9300CAFC89 /* AppDelegate.swift */; };
 		B0A9E9E02224CC9300CAFC89 /* VCTodoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0A9E9DF2224CC9300CAFC89 /* VCTodoList.swift */; };
 		B0A9E9E32224CC9300CAFC89 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0A9E9E12224CC9300CAFC89 /* Main.storyboard */; };
@@ -21,6 +22,7 @@
 
 /* Begin PBXFileReference section */
 		43FA380904A5F04E0593EBA3 /* Pods_Todoey.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Todoey.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B06FFD6D2228CB8400BE4BC5 /* SwipeTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeTableViewController.swift; sourceTree = "<group>"; };
 		B0A9E9DA2224CC9300CAFC89 /* Todoey.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Todoey.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0A9E9DD2224CC9300CAFC89 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B0A9E9DF2224CC9300CAFC89 /* VCTodoList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VCTodoList.swift; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 			children = (
 				B0A9E9DF2224CC9300CAFC89 /* VCTodoList.swift */,
 				B0B6B417222665F6000505AB /* VCCategory.swift */,
+				B06FFD6D2228CB8400BE4BC5 /* SwipeTableViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -259,6 +262,7 @@
 				B0B6B418222665F6000505AB /* VCCategory.swift in Sources */,
 				B0B3B2542227709600F2AB3D /* Data.swift in Sources */,
 				B0A9E9E02224CC9300CAFC89 /* VCTodoList.swift in Sources */,
+				B06FFD6E2228CB8500BE4BC5 /* SwipeTableViewController.swift in Sources */,
 				B0B3B256222779A300F2AB3D /* Item.swift in Sources */,
 				B0A9E9DE2224CC9300CAFC89 /* AppDelegate.swift in Sources */,
 				B0B3B258222779B300F2AB3D /* Category.swift in Sources */,
