@@ -58,13 +58,18 @@ class VCCategory: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "categoryCell", for: indexPath) as! SwipeTableViewCell;
-        cell.delegate = self;
 
         var category: Category?
         if (categoryArray != nil) {
             if (categoryArray!.count > 0) {
                 category = categoryArray?[indexPath.row];
+                
+                cell.delegate = self;
+            } else {
+                cell.delegate = nil;
             }
+        } else {
+            cell.delegate = nil;
         }
 
         cell.textLabel?.text = category?.name ?? "No categories added yet.";
@@ -131,16 +136,25 @@ class VCCategory: UITableViewController {
 }
 
 extension VCCategory: SwipeTableViewCellDelegate {
+    
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> [SwipeAction]? {
         guard orientation == .right else { return nil }
         
         let deleteAction = SwipeAction(style: .destructive, title: "Delete") { action, indexPath in
             // handle action by updating model with deletion
-//            print("on delete");
+            print("on delete");
             if let deletingCategory = self.categoryArray?[indexPath.row] {
                 do {
                     try self.realm.write {
-                        try self.realm.delete(deletingCategory);
+                        self.realm.delete(deletingCategory);
+                        
+                        if (self.categoryArray?.count ?? 0 > 0) {
+                            tableView.deleteRows(at: [indexPath], with: .automatic);
+                        } else {
+                            print("no more categories");
+                            tableView.reloadRows(at: [indexPath], with: .automatic);
+                        }
+                        
                     }
                 } catch {
                     print("Failed to remove category: \(error)");
@@ -154,4 +168,21 @@ extension VCCategory: SwipeTableViewCellDelegate {
         
         return [deleteAction]
     }
+    
+    func tableView(_ tableView: UITableView, editActionsOptionsForRowAt indexPath: IndexPath, for orientation: SwipeActionsOrientation) -> SwipeOptions {
+        print("swipe option");
+        var options = SwipeOptions()
+        options.expansionStyle = .destructive(automaticallyDelete: false);
+//        if (categoryArray != nil) {
+//            if (categoryArray!.count > 0) {
+//
+//            } else {
+//                options.expansionDelegate = nil;
+//            }
+//        } else {
+//            options.expansionDelegate = nil;
+//        }
+        return options;
+    }
+
 }
