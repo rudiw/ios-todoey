@@ -10,6 +10,7 @@ import UIKit
 //import CoreData
 import RealmSwift
 import SwipeCellKit
+import ChameleonFramework
 
 
 class VCCategory: SwipeTableViewController {
@@ -24,6 +25,8 @@ class VCCategory: SwipeTableViewController {
         super.viewDidLoad()
         
         loadCategories();
+        
+        self.tableView.separatorStyle = .none;
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -54,10 +57,13 @@ class VCCategory: SwipeTableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath) as! SwipeTableViewCell;
+    
         var category: Category?
         if (categoryArray != nil) {
             if (categoryArray!.count > 0) {
                 category = categoryArray?[indexPath.row];
+                
+                cell.backgroundColor = UIColor(hexString: category?.colorHex ?? UIColor.randomFlat.hexValue());
                 
                 cell.delegate = self;
             } else {
@@ -119,6 +125,7 @@ class VCCategory: SwipeTableViewController {
             
             let newCategory = Category();
             newCategory.name = txtCategory.text!;
+            newCategory.colorHex = UIColor.randomFlat.hexValue();
 
 //            self.categoryArray.append(newCategory);
 
